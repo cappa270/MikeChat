@@ -13,14 +13,14 @@ modified by Mike Capozzoli for Engineering 325 lab, the failed version is commen
 import socket
 import threading
 import time
+import sys
 SIZE = 4
 
-
+UserName = sys.argv[1] + " says: "
 #creating an instance of socket.  SOCK_STREAM designates a TCP/IP connection
 soc = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-#getting the IP address of the raspberry pie
-
+#getting the IP address of the raspberry pie by pinging gmail.  Tricky right? 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("gmail.com",80))
 IPaddr = s.getsockname()[0]
@@ -30,6 +30,8 @@ s.close()
 soc.bind(( IPaddr  ,5432)) 
 soc.listen(5)
 
+
+#I think implementing this threading class allows for multithreading.  I'm not sure how it works though
 class CThread(threading.Thread):
     def __init__(self,c):
         threading.Thread.__init__(self)
@@ -45,7 +47,7 @@ class CThread(threading.Thread):
     def run(self):
         while not self.stopIt:
             msg = self.mrecv()
-            print 'recieved->  ',msg
+            print msg
 
 def setConn(con1,con2):
     dict={}
@@ -59,16 +61,17 @@ def setConn(con1,con2):
         dict['send'] = con2
     return dict
 
-def msend(conn,msg):
-    if len(msg)<=999 and len(msg)>0:
-        conn.send(str(len(msg)))
+def msend(conn,UserName,msg):
+    TotalMessage = UserName + msg
+    if len(TotalMessage)<=999 and len(TotalMessage)>0:
+        conn.send(str(len(TotalMessage)))
         if conn.recv(2) == 'OK':
-            conn.send(msg)
+            conn.send(TotalMessage)
     else:
         conn.send(str(999))
         if conn.recv(2) == 'OK':
-            conn.send(msg[:999])
-            msend(conn,msg[1000:]) # calling recursive
+            conn.send(TotalMessage[:999])
+            msend(conn,TotalMessage[1000:]) # calling recursive
 
 
 (c1,a1) = soc.accept()
@@ -78,7 +81,7 @@ thr = CThread(dict['recv'])
 thr.start()
 try:
     while 1:
-        msend(dict['send'],raw_input())
+        msend(dict['send'],UserName,raw_input())
 except:
     print 'closing'
 thr.stopIt=True
