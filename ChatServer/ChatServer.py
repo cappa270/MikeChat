@@ -19,11 +19,15 @@ SIZE = 4
 #creating an instance of socket.  SOCK_STREAM designates a TCP/IP connection
 soc = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-#getting the IP address of this computer
-IP = socket.gethostbyaddr(socket.gethostname())
+#getting the IP address of the raspberry pie
+
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("gmail.com",80))
+IPaddr = s.getsockname()[0]
+s.close()
 
 # binding to ip address 
-soc.bind((IP[2],5432)) 
+soc.bind(( IPaddr  ,5432)) 
 soc.listen(5)
 
 class CThread(threading.Thread):
