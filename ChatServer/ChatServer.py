@@ -23,7 +23,7 @@ soc = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 IP = socket.gethostbyaddr(socket.gethostname())
 
 # binding to ip address 
-soc.bind((IP,5432)) 
+soc.bind((IP[2],5432)) 
 soc.listen(5)
 
 class CThread(threading.Thread):
