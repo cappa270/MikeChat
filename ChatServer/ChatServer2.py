@@ -71,7 +71,7 @@ def msend(conn,UserName,msg):
         conn.send(str(999))
         if conn.recv(2) == 'OK':
             conn.send(TotalMessage[:999])
-            msend(conn,TotalMessage[1000:]) # calling recursive
+            msend(conn,UserName,TotalMessage[1000:]) # calling recursive
 
 
 (c1,a1) = soc.accept()
@@ -85,7 +85,7 @@ try:
 except:
     print 'closing'
 thr.stopIt=True
-msend(dict['send'],'bye!!!')# for stoping the thread
+msend(dict['send'],UserName,'bye!!!')# for stoping the thread
 thr.conn.close()
 soc.close()
 
