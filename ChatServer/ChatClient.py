@@ -1,7 +1,12 @@
 #client
 import socket
+import sys
 import threading
 SIZE =4
+IP = '153.106.113.242'
+
+UserName = sys.argv[1]
+
 class client(threading.Thread):
     def __init__(self,c):
         threading.Thread.__init__(self)
@@ -19,11 +24,11 @@ class client(threading.Thread):
             print 'recieved-> ',msg
 
 soc1 = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-soc1.connect(('127.0.0.1',5432))
+soc1.connect((IP,5432))
 soc1.send('WILL SEND') # telling server we will send data from here
 
 soc2 = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-soc2.connect(('127.0.0.1',5432))
+soc2.connect((IP,5432))
 soc2.send('WILL RECV') # telling server we will recieve data from here
 
 def msend(conn,msg):
